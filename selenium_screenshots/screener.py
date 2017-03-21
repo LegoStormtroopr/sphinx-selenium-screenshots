@@ -4,7 +4,7 @@ def setup(app):
     app.add_config_value('screenshots_server_path', 'localhost', 'html')
     app.add_config_value('screenshots_save_path', '.', 'html')
     app.add_config_value('screenshots_read_path', '.', 'html')
-
+    app.add_config_value('screenshots_logout_path', '/logout/', 'html')
 
     app.add_directive('screenshot', ScreenshotPageDirective)
     # app.connect('doctree-resolved', process_todo_nodes)
@@ -40,6 +40,7 @@ class ScreenshotDirectiveBase(images.Image):
     def pre_run(self):
         self.env = self.state.document.settings.env
         self.server = self.env.config['screenshots_server_path']
+        s.default_logout_path = self.env.config['screenshots_server_path']+self.env.config['screenshots_logout_path']
 
         if len(self.arguments) > 0:
             reference = directives.uri(self.arguments[0])
@@ -92,6 +93,7 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
     option_spec['box'] = directives.unchanged
     option_spec['crop'] = directives.unchanged
     option_spec['crop_element'] = directives.unchanged
+    option_spec['browser_height'] = directives.unchanged
 
 
     def run(self):
@@ -111,6 +113,7 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
                 logout=self.option_as_dict_url('logout'),
                 clicker=self.options.get('clicker'),
                 box=self.options.get('box'),
+                height=self.options.get('browser_height'),
                 crop=self.option_as_literal('crop'),
                 crop_element=self.options.get('crop_element'),
             )

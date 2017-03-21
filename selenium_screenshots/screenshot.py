@@ -1,18 +1,21 @@
 from selenium import webdriver
 from PIL import Image, ImageDraw
-from seleniumrequests import PhantomJS
 
 class ScreenshotMaker:
     
     logged_in_user = None
 
-    def __init__(self, width=1200, height=768):
+    def __init__(self, width=1200, height=800):
         self.height = height
         self.width = width
         self.reset_driver()
 
     def reset_driver(self):
-        self.driver = PhantomJS()
+        self.driver = webdriver.PhantomJS()
+        self.driver.set_window_size(self.width, self.height)
+
+    def set_browser_height(self, height):
+        self.height = height
         self.driver.set_window_size(self.width, self.height)
 
     def mobile(self, height=800, width=600):
@@ -41,7 +44,7 @@ class ScreenshotMaker:
         if self.logged_in_user == username:
             return
         elif self.logged_in_user is not None:
-            self.logout()
+            self.logout(self.default_logout_path)
 
         self.driver.get(url)
         username_input = self.driver.find_element_by_css_selector('input[name="username"]')
@@ -58,6 +61,9 @@ class ScreenshotMaker:
     def capture_page(self, filename, url, preamble=None, form_data=None, login=None, logout=None, **kwargs):
         if login is not None:
             self.login(**login)
+
+        if kwargs.get('browser_height', None):
+            self.set_browser_height(kwargs.get('browser_height'))
 
         if url is not None:
             self.driver.get(url)
@@ -85,22 +91,23 @@ class ScreenshotMaker:
         im = Image.open(filename).convert('RGBA') # uses PIL library to open image in memory
 
         margin = 40
-        hi_w = element.size['width']+margin
-        hi_h = element.size['height']+margin
-        highlighter = Image.new('RGBA', (hi_w, hi_h) )
+        hi_w = element.size['width']
+        hi_h = element.size['height']
+        highlighter = Image.new('RGBA', (hi_w+margin, hi_h+margin) )
 
-        center_x = hi_w/2 # + left
-        center_y = hi_h/2 # + top
-        d=25
+        r=12  # radius of the dot in pixels
+        center_x = int(hi_w - max(r+1, hi_h/11 * 2) + margin/2) # + left
+        center_y = int(hi_h - max(r+1, hi_h/11 * 5) + margin/2) # + top
+
         draw = ImageDraw.Draw(highlighter)
         draw.ellipse(
-            [(center_x-d, center_y-d), (center_x+d, center_y+d)],
-            outline=(255,128,0,128),
-            fill=(255,255,0,64),
+            [(center_x-r, center_y-r), (center_x+r, center_y+r)],
+            outline=(203, 75, 22,200),
+            fill=(203, 75, 22,128),
         )
         draw.ellipse(
-            [(center_x-(d+1), center_y-(d+1)), (center_x+(d+1), center_y+(d+1))],
-            outline=(255,128,0,128),
+            [(center_x-(r+1), center_y-(r+1)), (center_x+(r+1), center_y+(r+1))],
+            outline=(203, 75, 22,200),
         )
         del draw
 
@@ -119,21 +126,31 @@ class ScreenshotMaker:
         element = self.driver.find_element_by_css_selector(selector)
         im = Image.open(filename).convert('RGBA') # uses PIL library to open image in memory
 
-        margin = 4
+        margin = 28
+        side = int(margin/2)-1
         hi_w = element.size['width']+margin
         hi_h = element.size['height']+margin
         highlighter = Image.new('RGBA', (hi_w, hi_h) )
 
         draw = ImageDraw.Draw(highlighter)
-        for d in range(0,int(margin/2)+1):
+        for d in range(side-4,side-1):
             draw.rectangle(
                 [(d, d), (hi_w-(d+1), hi_h-(d+1))],
-                outline=(256,64,64,256),
+                outline=(38, 139, 210, 250),
+            )
+        for d in range(1,side-4):
+            draw.rectangle(
+                [(d, d), (hi_w-(d+1), hi_h-(d+1))],
+                outline=(38, 139, 210,
+                    int(
+                        200/(side-4)*d
+                    )
+                ),
             )
         del draw
 
-        left = element.location['x'] - int(margin/2)
-        top = element.location['y'] - int(margin/2)
+        left = element.location['x'] - side
+        top = element.location['y'] - side
 
         im.paste(highlighter, (left, top), mask=highlighter)
         im.save(filename) # saves new cropped image
