@@ -114,7 +114,7 @@ class ScreenshotMaker:
         left = element.location['x'] - int(margin/2)
         top = element.location['y'] - int(margin/2)
 
-        im.paste(highlighter, (left, top), mask=highlighter)
+        im.paste(highlighter, (int(left), int(top)), mask=highlighter)
         im.save(filename) # saves new cropped image
 
     def crop(self, filename, crop):
@@ -152,7 +152,7 @@ class ScreenshotMaker:
         left = element.location['x'] - side
         top = element.location['y'] - side
 
-        im.paste(highlighter, (left, top), mask=highlighter)
+        im.paste(highlighter, (int(left), int(top)), mask=highlighter)
         im.save(filename) # saves new cropped image
 
     def crop_element(self, filename, element_selector):
