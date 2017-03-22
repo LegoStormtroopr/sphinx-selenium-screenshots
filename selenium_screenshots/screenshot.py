@@ -16,15 +16,18 @@ class ScreenshotMaker:
     logged_in_user = None
 
     def __init__(self, width=1200, height=800, driver="selenium.webdriver.PhantomJS"):
-        self.driver_class = import_string(driver)
+        self.driver_class = None #import_string(driver)
         self.height = height
         self.width = width
-        self.reset_driver()
+        self.reset_driver(driver)
 
     def reset_driver(self, driver_class=None):
+
         if driver_class is not None:
-            self.driver_class = import_string(driver_class)
-        self.driver = self.driver_class()
+            driver_class = import_string(driver_class)
+        if driver_class != self.driver_class:
+            self.driver_class = driver_class
+            self.driver = self.driver_class()
         self.driver.set_window_size(self.width, self.height)
 
     def set_browser_height(self, height):

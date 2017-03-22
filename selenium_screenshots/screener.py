@@ -20,7 +20,8 @@ try:
     from .screenshot import ScreenshotMaker
     s = ScreenshotMaker()
 except:
-    # We could be on readthedocs, lets hope files are in the ight places
+    raise
+    # We could be on readthedocs, lets hope files are in the right places
     s = None
 
 from sphinx.util.compat import make_admonition
