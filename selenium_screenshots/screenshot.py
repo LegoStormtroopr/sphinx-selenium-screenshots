@@ -1,17 +1,30 @@
 from selenium import webdriver
 from PIL import Image, ImageDraw
+from importlib import import_module
+
+def import_string(dotted_path):
+    """
+    Import a dotted module path and return the attribute/class designated by the
+    last name in the path. Raise ImportError if the import failed.
+    """
+    module_path, class_name = dotted_path.rsplit('.', 1)
+    module = import_module(module_path)
+    return getattr(module, class_name)
 
 class ScreenshotMaker:
     
     logged_in_user = None
 
-    def __init__(self, width=1200, height=800):
+    def __init__(self, width=1200, height=800, driver="selenium.webdriver.PhantomJS"):
+        self.driver_class = import_string(driver)
         self.height = height
         self.width = width
         self.reset_driver()
 
-    def reset_driver(self):
-        self.driver = webdriver.PhantomJS()
+    def reset_driver(self, driver_class=None):
+        if driver_class is not None:
+            self.driver_class = import_string(driver_class)
+        self.driver = self.driver_class()
         self.driver.set_window_size(self.width, self.height)
 
     def set_browser_height(self, height):
