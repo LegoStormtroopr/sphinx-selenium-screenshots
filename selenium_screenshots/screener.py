@@ -1,4 +1,5 @@
 import os
+import time
 
 def setup(app):
     app.add_config_value('screenshots_server_path', 'localhost', 'html')
@@ -50,9 +51,10 @@ class ScreenshotDirectiveBase(images.Image):
             self.filename = reference
             self.options['uri'] = reference
         else:
-            self.filename = "screenshot-%s-%d.%s" % (
+            self.filename = "screenshot-%s-%d-%s.%s" % (
                 self.env.docname.replace('/','--'),
                 self.env.new_serialno('screenshots'),
+                int(time.time()),  # Bust that cache!
                 'png'
             )
             self.arguments.append(None)
