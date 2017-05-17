@@ -8,7 +8,8 @@ def setup(app):
     app.add_config_value('screenshots_logout_path', '/logout/', 'html')
     app.add_config_value('screenshots_driver', 'selenium.webdriver.PhantomJS', 'html')
 
-    app.add_directive('screenshot', ScreenshotPageDirective)
+    if app.buildername == "html":
+        app.add_directive('screenshot', ScreenshotPageDirective)
     # app.connect('doctree-resolved', process_todo_nodes)
     # app.connect('env-purge-doc', purge_todos)
 
@@ -25,11 +26,7 @@ except:
     # We could be on readthedocs, lets hope files are in the right places
     s = None
 
-from sphinx.util.compat import make_admonition
-from sphinx.locale import _
-
-
-from docutils.parsers.rst.directives import images, html, tables
+from docutils.parsers.rst.directives import images
 
 
 class ScreenshotDirectiveBase(images.Image):
