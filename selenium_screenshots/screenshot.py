@@ -98,7 +98,11 @@ class ScreenshotMaker:
         if kwargs.get('crop', None):
             self.crop(filename, kwargs.get('crop'))
         if kwargs.get('crop_element', None):
-            self.crop_element(filename, kwargs.get('crop_element'))
+            if kwargs.get('crop_element_padding', None):
+                padding = kwargs.get('crop_element_padding', [50, 50, 50, 50])
+            else:
+                padding = [50, 50, 50, 50]
+            self.crop_element(filename, kwargs.get('crop_element'), padding)
         if logout:
             self.logout(**logout)
 
@@ -171,17 +175,21 @@ class ScreenshotMaker:
         im.paste(highlighter, (int(left), int(top)), mask=highlighter)
         im.save(filename) # saves new cropped image
 
-    def crop_element(self, filename, element_selector):
+    def crop_element(self, filename, element_selector, padding):
         element = self.driver.find_element_by_css_selector(element_selector)
 
+        if len(padding) == 2:
+            pad_top, pad_right, pad_bottom, pad_left = padding*2
+        elif len(padding) == 1:
+            pad_top, pad_right, pad_bottom, pad_left = padding*4
+        else:
+            pad_top, pad_right, pad_bottom, pad_left = padding
         im = Image.open(filename) # uses PIL library to open image in memory
         
-        delta_x = 50
-        delta_y = 50
-        left = element.location['x'] - delta_x
-        top = element.location['y'] - delta_y
-        right = element.location['x'] + element.size['width'] + delta_x
-        bottom = element.location['y'] + element.size['height'] + delta_y
+        left = max(0, element.location['x'] - pad_left)
+        top = max(0, element.location['y'] - pad_top)
+        right = element.location['x'] + element.size['width'] + pad_right
+        bottom = element.location['y'] + element.size['height'] + pad_bottom
 
         self.crop(filename, (left, top, right, bottom)) # defines crop points
         # im.save(filename) # saves new cropped image

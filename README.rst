@@ -73,6 +73,23 @@ You can pass any valid css selector to the ``crop_element`` parameter to capture
      :alt: The login button
      :crop_element: a[href^=/login/]
 
+By default a padding of 50px on all edges, this padding can be changed with ``crop_element_padding``.
+
+This argument can be 1, 2 or 4 entries long, as a python array, where:
+
+* 1 element sets the padding for all edges uniformly in pixels - eg. ``[60]`` sets all edges to 60px of padding
+* 2 entries sets the padding for top and bottom, and left and right respectively - eg. ``[20, 40]`` sets the topp and bottom padding to 20px, and left and right to 40px.
+* 4 entries sets the padding as top, right, bottom and left (i.e clockwise from the top) - eg. ``[10, 20, 30, 40]`` set the top padding to 10px, right to 20px, bottom to 30px and left to 40px
+
+For example::
+
+  .. screenshot::
+     :server_path: /path/to/a/file.html
+     :alt: The login button
+     :crop_element: a[href^=/login/]
+     :crop_element_padding: [50, 50]
+
+
 Using sessions to show how pages react
 ++++++++++++++++++++++++++++++++++++++
 

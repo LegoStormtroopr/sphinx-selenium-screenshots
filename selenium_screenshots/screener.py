@@ -95,6 +95,7 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
     option_spec['box'] = directives.unchanged
     option_spec['crop'] = directives.unchanged
     option_spec['crop_element'] = directives.unchanged
+    option_spec['crop_element_padding'] = directives.unchanged
     option_spec['browser_height'] = directives.unchanged
 
 
@@ -118,5 +119,6 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
                 height=self.options.get('browser_height'),
                 crop=self.option_as_literal('crop'),
                 crop_element=self.options.get('crop_element'),
+                crop_element_padding=self.option_as_literal('crop_element_padding'),
             )
         return super(ScreenshotPageDirective, self).run()
