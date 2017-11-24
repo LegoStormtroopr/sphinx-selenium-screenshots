@@ -100,8 +100,8 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
 
 
     def run(self):
-        self['classes'].append("screenshot")
         out = super(ScreenshotPageDirective, self).pre_run()
+        self.options['classes'].append("screenshot")
 
         server_path = self.options.get('server_path')
         if server_path is not None and not server_path.startswith(('http://','https://')):
