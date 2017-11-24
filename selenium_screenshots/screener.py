@@ -101,6 +101,7 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
 
     def run(self):
         out = super(ScreenshotPageDirective, self).pre_run()
+        self.options['classes'] = self.options.get('classes', [])
         self.options['classes'].append("screenshot")
 
         server_path = self.options.get('server_path')
