@@ -12,13 +12,21 @@ How to use
 ----------
 
 1. Install ``sphinx`` and ``sphinx-selenium-screenshots``
-2. Add the configuration parameters::
+2. Add ``selenium_screenshots.screener`` to the extensions in your configuration file::
+
+      extensions = [
+      # ... ,
+      'selenium_screenshots.screener',
+      # ... ,
+      ]
+
+3. Add the configuration parameters::
 
       screenshots_server_path = 'http://127.0.0.1:8080'
       screenshots_read_path = '/_static/screenshots'
       screenshots_save_path = os.path.abspath(os.path.join('.',screenshots_read_path[1:]))
 
-3. Insert screenshots into your documentation with the ``screenshot`` directive::
+4. Insert screenshots into your documentation with the ``screenshot`` directive::
 
       .. screenshot:: 
          :server_path: /path/to/a/file.html
