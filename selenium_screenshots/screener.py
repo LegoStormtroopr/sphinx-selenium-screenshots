@@ -8,8 +8,7 @@ def setup(app):
     app.add_config_value('screenshots_logout_path', '/logout/', 'html')
     app.add_config_value('screenshots_driver', 'selenium.webdriver.PhantomJS', 'html')
 
-    if app.buildername == "html":
-        app.add_directive('screenshot', ScreenshotPageDirective)
+    app.add_directive('screenshot', ScreenshotPageDirective)
     # app.connect('doctree-resolved', process_todo_nodes)
     # app.connect('env-purge-doc', purge_todos)
 
