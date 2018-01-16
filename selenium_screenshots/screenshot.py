@@ -32,6 +32,7 @@ class ScreenshotMaker:
             options = Options()
             options.add_argument('--no-sandbox')
             options.add_argument('--headless')
+            options.add_argument('--disable-gpu')
             opts.update({"chrome_options": options})
 
         if "firefox" in driver_class.lower():
