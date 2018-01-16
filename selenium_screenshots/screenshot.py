@@ -26,11 +26,19 @@ class ScreenshotMaker:
 
     def reset_driver(self, driver_class=None):
 
+        if "chrome" in driver_class.lower():
+            from selenium.webdriver.chrome.options import Options
+            chrome_options = Options()
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--headless')
+            opts = {"chrome_options": chrome_options}
+
         if driver_class is not None:
             driver_class = import_string(driver_class)
         if driver_class != self.driver_class:
             self.driver_class = driver_class
-            self.driver = self.driver_class()
+            self.driver = self.driver_class(**opts)
+
         self.driver.set_window_size(self.width, self.height)
 
     def set_browser_height(self, height):
