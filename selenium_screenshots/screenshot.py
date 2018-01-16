@@ -2,6 +2,9 @@ from selenium import webdriver
 from PIL import Image, ImageDraw
 from importlib import import_module
 
+import logging
+logger = logging.getLogger(__name__)
+
 def import_string(dotted_path):
     """
     Import a dotted module path and return the attribute/class designated by the
@@ -49,10 +52,40 @@ class ScreenshotMaker:
             for field, data in form.items():
                 if field != '__submit__':
                     input_field = self.driver.find_element_by_css_selector('*[name="%s"]'%field)
-                    #username_input.send_keys(username)
-                    self.driver.execute_script(
-                        "arguments[0].value = '" + data +"'", input_field
-                    )
+
+                    if input_field.get_attribute("type") == "radio":
+                        input_field = self.driver.find_element_by_css_selector(
+                            '*[name="%s"][value="%s"]'%(field,data))
+                        self.driver.execute_script(
+                            "arguments[0].checked = true", input_field
+                        )
+                    elif input_field.get_attribute("type") == "checkbox":
+                        data = [val.strip() for val in data.split(",")]
+
+                        input_fields = self.driver.find_elements_by_css_selector(
+                            '*[name="%s"]'%(field))
+                        for input_field in input_fields:
+                            # loop over the others to uncheck old ones
+                            self.driver.execute_script(
+                                "arguments[0].checked = %s"%(['false','true'][input_field.get_property('value') in data]),
+                                input_field
+                            )
+                    elif input_field.tag_name == "select" and input_field.get_attribute("multiple"):
+                        data = [val.strip() for val in data.split(",")]
+
+                        options = self.driver.find_elements_by_css_selector('*[name="%s"] option'%field)
+                        for option in options:
+                            # loop over the others to uncheck old ones
+                            self.driver.execute_script(
+                                "arguments[0].selected = %s"%(['false','true'][option.get_property('value') in data]),
+                                option
+                            )
+                    else:
+                        input_field = self.driver.find_element_by_css_selector('*[name="%s"]'%field)
+
+                        self.driver.execute_script(
+                            "arguments[0].value = '" + data +"'", input_field
+                        )
             if form.get('__submit__', True):
                 input_field.submit()
 
