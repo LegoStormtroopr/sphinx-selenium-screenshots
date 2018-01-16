@@ -29,10 +29,17 @@ class ScreenshotMaker:
         opts = {}
         if "chrome" in driver_class.lower():
             from selenium.webdriver.chrome.options import Options
-            chrome_options = Options()
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--headless')
-            opts.update({"chrome_options": chrome_options})
+            options = Options()
+            options.add_argument('--no-sandbox')
+            options.add_argument('--headless')
+            opts.update({"chrome_options": options})
+
+        if "firefox" in driver_class.lower():
+            from selenium.webdriver.firefox.options import Options
+
+            options = Options()
+            options.add_argument('-headless')
+            opts.update({"firefox_options": options})
 
         if driver_class is not None:
             driver_class = import_string(driver_class)
