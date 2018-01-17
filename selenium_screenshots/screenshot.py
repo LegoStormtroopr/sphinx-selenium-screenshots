@@ -97,6 +97,16 @@ class ScreenshotMaker:
                                 "arguments[0].selected = %s"%(['false','true'][option.get_property('value') in data]),
                                 option
                             )
+                    elif input_field.get_attribute("data-type") == "ckeditortype":
+                        field_id = input_field.get_attribute("id")
+                        self.driver.execute_script(
+                            'CKEDITOR.instances["{id}"].setData("{data}")'.format(
+                                id=field_id,
+                                data=data
+                            )
+                            , input_field
+                        )
+
                     else:
                         input_field = self.driver.find_element_by_css_selector('*[name="%s"]'%field)
 
