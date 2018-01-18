@@ -80,9 +80,6 @@ class ScreenshotMaker:
 
                         input_fields = self.driver.find_elements_by_css_selector(
                             '*[name="%s"]'%(field))
-                        print("-----------------")
-                        print(input_fields)
-                        print("-----------------")
                         if len(input_fields) == 1:
                                 self.driver.execute_script(
                                     "arguments[0].checked = %s"%(['false','true'][data]),
