@@ -77,16 +77,25 @@ class ScreenshotMaker:
                             "arguments[0].checked = true", input_field
                         )
                     elif input_field.get_attribute("type") == "checkbox":
-                        data = [val.strip() for val in data.split(",")]
 
                         input_fields = self.driver.find_elements_by_css_selector(
                             '*[name="%s"]'%(field))
-                        for input_field in input_fields:
-                            # loop over the others to uncheck old ones
-                            self.driver.execute_script(
-                                "arguments[0].checked = %s"%(['false','true'][input_field.get_property('value') in data]),
-                                input_field
-                            )
+                        print("-----------------")
+                        print(input_fields)
+                        print("-----------------")
+                        if len(input_fields) == 1:
+                                self.driver.execute_script(
+                                    "arguments[0].checked = %s"%(['false','true'][data]),
+                                    input_field
+                                )
+                        else:
+                            data = [val.strip() for val in data.split(",")]
+                            for input_field in input_fields:
+                                # loop over the others to uncheck old ones
+                                self.driver.execute_script(
+                                    "arguments[0].checked = %s"%(['false','true'][input_field.get_property('value') in data]),
+                                    input_field
+                                )
                     elif input_field.tag_name == "select" and input_field.get_attribute("multiple"):
                         data = [val.strip() for val in data.split(",")]
 
