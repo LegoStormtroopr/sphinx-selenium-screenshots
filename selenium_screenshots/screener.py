@@ -108,18 +108,29 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
             server_path = self.server+self.options['server_path']
 
         if s is not None:
-            s.capture_page(
-                filename = self.get_filename(),
-                url=server_path,
-                preamble=self.content,
-                form_data=self.option_as_literal('form_data'),
-                login=self.option_as_dict_url('login'),
-                logout=self.option_as_dict_url('logout'),
-                clicker=self.options.get('clicker'),
-                box=self.options.get('box'),
-                height=self.options.get('browser_height'),
-                crop=self.option_as_literal('crop'),
-                crop_element=self.options.get('crop_element'),
-                crop_element_padding=self.option_as_literal('crop_element_padding'),
-            )
+            try:
+                s.capture_page(
+                    filename = self.get_filename(),
+                    url=server_path,
+                    preamble=self.content,
+                    form_data=self.option_as_literal('form_data'),
+                    login=self.option_as_dict_url('login'),
+                    logout=self.option_as_dict_url('logout'),
+                    clicker=self.options.get('clicker'),
+                    box=self.options.get('box'),
+                    height=self.options.get('browser_height'),
+                    crop=self.option_as_literal('crop'),
+                    crop_element=self.options.get('crop_element'),
+                    crop_element_padding=self.option_as_literal('crop_element_padding'),
+                )
+            except Exception as e:
+                import sys
+                import traceback
+                msg = "\n\nA screenshot failed\n%s\n\n" % ("="*20,)
+                print(msg, file=sys.stderr)
+                print(e, file=sys.stderr)
+                exc_info = sys.exc_info()
+                traceback.print_exception(*exc_info, file=sys.stderr)
+
+
         return super(ScreenshotPageDirective, self).run()
