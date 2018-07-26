@@ -126,7 +126,14 @@ class ScreenshotPageDirective(ScreenshotDirectiveBase):
             except Exception as e:
                 import sys
                 import traceback
-                msg = "\n\nA screenshot failed\n%s\n\n" % ("="*20,)
+                msg = "\n".join([
+                    "","",
+                    "A screenshot failed","="*20,
+                    "","",
+                    "It would have been called '{}'".format(self.filename),
+                    "I think it was in the file '{}'".format(self.env.docname),
+                    "",
+                ])
                 print(msg, file=sys.stderr)
                 print(e, file=sys.stderr)
                 exc_info = sys.exc_info()

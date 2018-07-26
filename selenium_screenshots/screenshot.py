@@ -1,6 +1,7 @@
 from selenium import webdriver
 from PIL import Image, ImageDraw
 from importlib import import_module
+import os
 
 import logging
 logger = logging.getLogger(__name__)
@@ -41,6 +42,12 @@ class ScreenshotMaker:
             options = Options()
             options.add_argument('-headless')
             opts.update({"firefox_options": options})
+
+        log_path = os.getenv("PhantomJS_LOGPATH", None)
+        if log_path is "null":
+            opts.update({"service_log_path": os.path.devnull})
+        elif log_path is not None:
+            opts.update({"service_log_path": os.getenv("PhantomJS_LOGPATH")})
 
         if driver_class is not None:
             driver_class = import_string(driver_class)
