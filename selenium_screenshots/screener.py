@@ -6,7 +6,7 @@ def setup(app):
     app.add_config_value('screenshots_save_path', '.', 'html')
     app.add_config_value('screenshots_read_path', '.', 'html')
     app.add_config_value('screenshots_logout_path', '/logout/', 'html')
-    app.add_config_value('screenshots_driver', 'selenium.webdriver.PhantomJS', 'html')
+    app.add_config_value('screenshots_driver', 'selenium.webdriver.Chrome', 'html')
 
     app.add_directive('screenshot', ScreenshotPageDirective)
     # app.connect('doctree-resolved', process_todo_nodes)
