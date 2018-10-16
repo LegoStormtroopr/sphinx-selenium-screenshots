@@ -1,12 +1,13 @@
 import os
 import time
+from .screenshot import ScreenshotMaker
 
 def setup(app):
     app.add_config_value('screenshots_server_path', 'localhost', 'html')
     app.add_config_value('screenshots_save_path', '.', 'html')
     app.add_config_value('screenshots_read_path', '.', 'html')
     app.add_config_value('screenshots_logout_path', '/logout/', 'html')
-    app.add_config_value('screenshots_driver', 'selenium.webdriver.Chrome', 'html')
+    app.add_config_value('screenshots_driver', 'selenium.webdriver.PhantomJS', 'html')
 
     app.add_directive('screenshot', ScreenshotPageDirective)
     # app.connect('doctree-resolved', process_todo_nodes)
@@ -17,13 +18,13 @@ def setup(app):
 
 from docutils.parsers.rst import Directive, directives
 
-try:
-    from .screenshot import ScreenshotMaker
-    s = ScreenshotMaker()
-except:
-    raise
-    # We could be on readthedocs, lets hope files are in the right places
-    s = None
+# try:
+#     from .screenshot import ScreenshotMaker
+#     s = ScreenshotMaker()
+# except:
+#     raise
+#     # We could be on readthedocs, lets hope files are in the right places
+#     s = None
 
 from docutils.parsers.rst.directives import images
 
@@ -39,7 +40,8 @@ class ScreenshotDirectiveBase(images.Image):
     def pre_run(self):
         self.env = self.state.document.settings.env
         self.server = self.env.config['screenshots_server_path']
-        s.reset_driver(driver_class=self.env.config['screenshots_driver'])
+        s = ScreenshotMaker(driver=self.env.config['screenshots_driver'])
+#         s.reset_driver(driver_class=self.env.config['screenshots_driver'])
         s.default_logout_path = self.env.config['screenshots_server_path']+self.env.config['screenshots_logout_path']
 
         if len(self.arguments) > 0:
